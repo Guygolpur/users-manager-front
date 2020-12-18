@@ -38,8 +38,6 @@ class IsLogin extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('this.props.isAccountExists: ', state.isAccountExists)
-
   return {
     jwt: state.jwt,
     isAccountExists: state.isAccountExists,

@@ -119,7 +119,6 @@ class SignUp extends Component {
           })
           .catch((error) => {
             error.json().then((message) => {
-              console.log(message);
               validationMessage = message.msg;
               this.togglePopup();
             });

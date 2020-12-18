@@ -83,7 +83,6 @@ export const deleteContact = (id, jwt) => {
       token: jwt,
     },
   };
-  console.log('id: ', id);
   return (dispatch) => {
     fetch(
       `https://users-manager-server.herokuapp.com/api/users/users-list/${id}`,

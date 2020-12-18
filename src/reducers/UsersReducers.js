@@ -32,6 +32,7 @@ export default (state = initialState, action) => {
         ...state,
         detailView: false,
         userSelected: null,
+        toUpdate: false,
       };
 
     case 'FORM_UPDATE':
