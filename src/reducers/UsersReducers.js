@@ -9,6 +9,7 @@ const initialState = {
   company: '',
   _id: '',
   toUpdate: false,
+  jwt: '',
 };
 
 export default (state = initialState, action) => {
@@ -65,6 +66,12 @@ export default (state = initialState, action) => {
         email: action.payload.email,
         company: action.payload.company,
         _id: action.payload._id,
+      };
+
+    case 'SAVE_JWT':
+      return {
+        ...state,
+        jwt: action.jwt,
       };
 
     case 'SAVE_CONTACT':
