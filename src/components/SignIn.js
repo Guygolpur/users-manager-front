@@ -91,6 +91,10 @@ class SignIn extends Component {
           title="Login"
           titleStyle={{marginHorizontal: 5}}
         />
+        <View style={styles.registrationWrapper}>
+          <Text>Dont have an account?</Text>
+          <Text style={styles.registration}>Click here</Text>
+        </View>
       </View>
     );
   }
@@ -109,6 +113,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     marginBottom: 10,
+  },
+  registrationWrapper: {
+    top: 50,
+  },
+  registration: {
+    textAlign: 'center',
+    color: 'blue'
   },
 });
 

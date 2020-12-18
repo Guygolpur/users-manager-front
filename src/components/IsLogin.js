@@ -7,10 +7,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {jwtHandler} from '../actions';
 
 const styles = StyleSheet.create({
-    container: {
-    flex: 1
-    },
-  });
+  container: {
+    flex: 1,
+  },
+});
 
 class IsLogin extends Component {
   UNSAFE_componentWillMount() {
@@ -18,16 +18,13 @@ class IsLogin extends Component {
   }
 
   isLogin() {
-    if (!this.props.jwt) {
-      return <SignIn />;
-    } else {
-      return (
-        <NavigationContainer>
-          <Navigation />
-        </NavigationContainer>
-      );
-    }
+    return (
+      <NavigationContainer>
+        {!this.props.jwt ? <SignIn /> : <Navigation />}
+      </NavigationContainer>
+    );
   }
+
   render() {
     return <View style={styles.container}>{this.isLogin()}</View>;
   }
