@@ -1,10 +1,43 @@
 import React, {Component} from 'react';
-import {Text, Alert, Button, View, StyleSheet} from 'react-native';
+import {Text, Button, View, StyleSheet} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {connect} from 'react-redux';
-import * as actions from '../actions';
 
-import {jwtHandler} from '../actions';
+import {jwtHandler, signInOrUp} from '../actions';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title1: {
+    textAlign: 'center',
+    fontSize: 24,
+    bottom: 40,
+  },
+  inputContainer: {
+    top: 13,
+  },
+  input: {
+    width: 200,
+    height: 44,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    marginBottom: 10,
+  },
+  registrationWrapper: {
+    top: 50,
+  },
+  registrationTitle: {
+    textAlign: 'center',
+  },
+  registration: {
+    textAlign: 'center',
+    color: 'blue',
+  },
+});
 
 class SignIn extends Component {
   constructor(props) {
@@ -59,74 +92,63 @@ class SignIn extends Component {
       .catch((error) => console.log(error));
   }
 
+  onCreateAccount() {
+    this.props.signInOrUp(true);
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-          value={this.state.email}
-          onChangeText={(email) => this.setState({email})}
-          label="Email"
-          style={styles.input}
-        />
-        <TextInput
-          value={this.state.password}
-          onChangeText={(password) => this.setState({password})}
-          label="Password"
-          secureTextEntry={true}
-          style={styles.input}
-        />
-        <Button
-          buttonStyle={{width: 150}}
-          containerStyle={{margin: 5}}
-          disabledStyle={{
-            borderWidth: 2,
-            borderColor: '#00F',
-          }}
-          disabledTitleStyle={{color: '#00F'}}
-          linearGradientProps={null}
-          iconContainerStyle={{background: '#000'}}
-          loadingProps={{animating: true}}
-          loadingStyle={{}}
-          onPress={this.onLogin.bind(this)}
-          title="Login"
-          titleStyle={{marginHorizontal: 5}}
-        />
-        <View style={styles.registrationWrapper}>
-          <Text>Dont have an account?</Text>
-          <Text style={styles.registration}>Click here</Text>
+        <Text style={styles.title1}>Sign In</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            value={this.state.email}
+            onChangeText={(email) => this.setState({email})}
+            label="Email"
+            style={styles.input}
+          />
+          <TextInput
+            value={this.state.password}
+            onChangeText={(password) => this.setState({password})}
+            label="Password"
+            secureTextEntry={true}
+            style={styles.input}
+          />
+          <Button
+            buttonStyle={{width: 150}}
+            containerStyle={{margin: 5}}
+            disabledStyle={{
+              borderWidth: 2,
+              borderColor: '#00F',
+            }}
+            disabledTitleStyle={{color: '#00F'}}
+            linearGradientProps={null}
+            iconContainerStyle={{background: '#000'}}
+            loadingProps={{animating: true}}
+            loadingStyle={{}}
+            onPress={this.onLogin.bind(this)}
+            title="Login"
+            titleStyle={{marginHorizontal: 5}}
+          />
+          <View style={styles.registrationWrapper}>
+            <Text style={styles.registrationTitle}>Dont have an account?</Text>
+            <Text
+              style={styles.registration}
+              onPress={this.onCreateAccount.bind(this)}>
+              Create New Account
+            </Text>
+          </View>
         </View>
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    marginBottom: 10,
-  },
-  registrationWrapper: {
-    top: 50,
-  },
-  registration: {
-    textAlign: 'center',
-    color: 'blue'
-  },
-});
-
 const mapStateToProps = (state) => {
   return {
     jwt: state.jwt,
+    isAccountExists: state.isAccountExists,
   };
 };
 
-export default connect(mapStateToProps, {jwtHandler})(SignIn);
+export default connect(mapStateToProps, {jwtHandler, signInOrUp})(SignIn);

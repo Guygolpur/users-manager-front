@@ -94,6 +94,12 @@ export default (state = initialState, action) => {
         userSelected: null,
       };
 
+    case 'SIGN_IN_OR_UP':
+      return {
+        ...state,
+        isAccountExists: action.isAccountExists,
+      };
+
     default:
       return state;
   }

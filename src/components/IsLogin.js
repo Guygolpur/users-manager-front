@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import SignIn from './SignIn';
+import SignUp from './SignUp';
 import Navigation from './Navigation';
 import {NavigationContainer} from '@react-navigation/native';
-import {jwtHandler} from '../actions';
+import {jwtHandler, signInOrUp} from '../actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,7 +21,13 @@ class IsLogin extends Component {
   isLogin() {
     return (
       <NavigationContainer>
-        {!this.props.jwt ? <SignIn /> : <Navigation />}
+        {!this.props.jwt ? (
+          <View style={styles.container}>
+            {!this.props.isAccountExists ? <SignIn /> : <SignUp />}
+          </View>
+        ) : (
+          <Navigation />
+        )}
       </NavigationContainer>
     );
   }
@@ -31,9 +38,12 @@ class IsLogin extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log('this.props.isAccountExists: ', state.isAccountExists)
+
   return {
     jwt: state.jwt,
+    isAccountExists: state.isAccountExists,
   };
 };
 
-export default connect(mapStateToProps, {jwtHandler})(IsLogin);
+export default connect(mapStateToProps, {jwtHandler, signInOrUp})(IsLogin);

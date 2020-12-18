@@ -151,3 +151,9 @@ export const jwtHandler = (jwt) => {
     dispatch({type: 'SAVE_JWT', jwt: jwt});
   };
 };
+
+export const signInOrUp = (isAccountExists) => {
+  return (dispatch) => {
+    dispatch({type: 'SIGN_IN_OR_UP', isAccountExists: isAccountExists});
+  };
+};
