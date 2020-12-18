@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Text, Button, View, StyleSheet} from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {connect} from 'react-redux';
+import Modal from 'react-native-modal';
 
 import {jwtHandler, signInOrUp} from '../actions';
 
@@ -37,7 +38,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'blue',
   },
+  validationPopup: {
+    flex: 1,
+    top: 240,
+  },
+  validationPopupMessage: {
+    fontSize: 35,
+    textAlign: 'center',
+    color: '#a8b1bf',
+  },
+  validationPopupButton: {
+    paddingTop: 30,
+  },
 });
+
+var statusOk = true;
+var validationMessage = '';
 
 class SignIn extends Component {
   constructor(props) {
@@ -47,59 +63,88 @@ class SignIn extends Component {
       email: '',
       password: '',
       jwt: '',
+      isPopupVisible: false,
     };
   }
 
-  go = () => {
+  checkEmailValidation = () => {
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(this.state.email) === true) {
-      alert('valid');
+      return true;
     } else {
-      alert();
+      return false;
     }
   };
 
   onLogin() {
     const {email, password} = this.state;
+    let isEmailValid = this.checkEmailValidation();
+    if (isEmailValid) {
+      var details = {
+        email: email,
+        password: password,
+      };
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + '=' + encodedValue);
+      }
+      formBody = formBody.join('&');
 
-    var details = {
-      email: email,
-      password: password,
-    };
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
-
-    fetch('https://users-manager-server.herokuapp.com/api/admins/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      },
-      body: formBody,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        this.setState({
-          jwt: data.token,
-        });
-        this.props.jwtHandler(data.token);
+      fetch('https://users-manager-server.herokuapp.com/api/admins/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: formBody,
       })
-      .catch((error) => console.log(error));
+        .then((response) => {
+          if (!response.ok) {
+            throw response;
+          }
+          return response.json();
+        })
+        .then((data) => {
+          this.setState({
+            jwt: data.token,
+          });
+          this.props.jwtHandler(data.token);
+        })
+        .catch((error) => {
+          error.json().then((message) => {
+            validationMessage = message.message;
+            this.togglePopup();
+          });
+        });
+    } else {
+      validationMessage = 'Email is not valid';
+      this.togglePopup();
+    }
   }
 
   onCreateAccount() {
     this.props.signInOrUp(true);
   }
 
+  togglePopup = () => {
+    this.setState({isPopupVisible: !this.state.isPopupVisible});
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.title1}>Sign In</Text>
+        <Modal isVisible={this.state.isPopupVisible}>
+          <View style={styles.validationPopup}>
+            <Text style={styles.validationPopupMessage}>
+              {validationMessage}
+            </Text>
+            <View style={styles.validationPopupButton}>
+              <Button title="OK" onPress={this.togglePopup} />
+            </View>
+          </View>
+        </Modal>
         <View style={styles.inputContainer}>
           <TextInput
             value={this.state.email}

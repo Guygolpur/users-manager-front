@@ -104,7 +104,12 @@ class SignUp extends Component {
           },
           body: formBody,
         })
-          .then((response) => response.json())
+          .then((response) => {
+            if (!response.ok) {
+              throw response;
+            }
+            return response.json();
+          })
           .then((data) => {
             this.setState({
               jwt: data.token,
@@ -112,7 +117,13 @@ class SignUp extends Component {
             this.props.jwtHandler(data.token);
             this.props.signInOrUp(false);
           })
-          .catch((error) => console.log('error: ', error));
+          .catch((error) => {
+            error.json().then((message) => {
+              console.log(message);
+              validationMessage = message.msg;
+              this.togglePopup();
+            });
+          });
       } else {
         validationMessage = 'Passwords are not equale';
         this.togglePopup();
